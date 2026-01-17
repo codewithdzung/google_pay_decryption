@@ -51,7 +51,7 @@ RSpec.describe GooglePayDecryption::Security do
     it 'produces consistent results for same inputs' do
       key_material = 'shared_secret'
       info = 'context_info'
-      
+
       key1 = described_class.hkdf_derive(key_material, info, 32)
       key2 = described_class.hkdf_derive(key_material, info, 32)
 

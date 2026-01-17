@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe GooglePayDecryption do
-  it "has a version number" do
+  it 'has a version number' do
     expect(GooglePayDecryption::VERSION).not_to be nil
   end
 
@@ -57,7 +57,7 @@ RSpec.describe GooglePayDecryption do
         'ephemeralPublicKey' => 'test',
         'tag' => 'test'
       }
-      
+
       token = instance_double(GooglePayDecryption::AndroidPayToken)
       allow(GooglePayDecryption).to receive(:build_token).and_return(token)
       allow(token).to receive(:decrypt).and_return('{"result":"success"}')

@@ -9,9 +9,7 @@ module GooglePayDecryption
     # @return [Boolean] true if strings are equal, false otherwise
     def self.secure_compare(a, b)
       # Try to use fast_secure_compare if available
-      if defined?(FastSecureCompare)
-        return FastSecureCompare.compare(a, b)
-      end
+      return FastSecureCompare.compare(a, b) if defined?(FastSecureCompare)
 
       # Fallback to pure Ruby implementation
       return false unless a.bytesize == b.bytesize
@@ -31,7 +29,7 @@ module GooglePayDecryption
     # @return [String] The derived key
     def self.hkdf_derive(key_material, info, length)
       require 'openssl'
-      
+
       # Using HKDF with SHA-256
       # Extract phase (using zero salt as per Google Pay specification)
       hmac = OpenSSL::HMAC.new("\x00" * 32, OpenSSL::Digest.new('SHA256'))

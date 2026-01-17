@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "google_pay_decryption/version"
-require_relative "google_pay_decryption/errors"
-require_relative "google_pay_decryption/security"
-require_relative "google_pay_decryption/token"
-require_relative "google_pay_decryption/google_pay_token"
-require_relative "google_pay_decryption/android_pay_token"
+require_relative 'google_pay_decryption/version'
+require_relative 'google_pay_decryption/errors'
+require_relative 'google_pay_decryption/security'
+require_relative 'google_pay_decryption/token'
+require_relative 'google_pay_decryption/google_pay_token'
+require_relative 'google_pay_decryption/android_pay_token'
 
 module GooglePayDecryption
   # Build a token from the given attributes
@@ -27,7 +27,7 @@ module GooglePayDecryption
   #   token = GooglePayDecryption.build_token(token_attrs)
   def self.build_token(token_attrs, **options)
     token_attrs = symbolize_keys(token_attrs)
-    
+
     if google_pay_token?(token_attrs)
       GooglePayToken.new(token_attrs, **options)
     else
@@ -46,15 +46,13 @@ module GooglePayDecryption
     token.decrypt(private_key_pem)
   end
 
-  private
-
   def self.google_pay_token?(token_attrs)
     token_attrs.key?(:protocolVersion) || token_attrs.key?('protocolVersion')
   end
 
   def self.symbolize_keys(hash)
     return hash unless hash.is_a?(Hash)
-    
+
     hash.transform_keys do |key|
       key.is_a?(String) ? key.to_sym : key
     end

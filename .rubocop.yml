@@ -1,8 +1,59 @@
 AllCops:
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  SuggestExtensions: false
+  UseCache: false
+  Exclude:
+    - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'sig/**/*'
 
+# Style preferences
 Style/StringLiterals:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
 
 Style/StringLiteralsInInterpolation:
-  EnforcedStyle: double_quotes
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+# Metrics
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'google_pay_decryption.gemspec'
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+# Layout
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'spec/**/*'
+    - 'google_pay_decryption.gemspec'
+
+# Naming
+Naming/MethodParameterName:
+  MinNameLength: 1
+  AllowedNames:
+    - a
+    - b
+
+Naming/PredicateMethod:
+  Exclude:
+    - 'lib/google_pay_decryption/google_pay_token.rb'
+
+# Gemspec
+Gemspec/DevelopmentDependencies:
+  Enabled: false

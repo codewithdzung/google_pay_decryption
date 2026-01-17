@@ -20,7 +20,7 @@ module GooglePayDecryption
 
       # Parse signed message
       signed_data = JSON.parse(token_attrs[:signedMessage])
-      
+
       encrypted_message = signed_data['encryptedMessage']
       ephemeral_public_key = signed_data['ephemeralPublicKey']
       tag = signed_data['tag']
@@ -63,14 +63,12 @@ module GooglePayDecryption
 
     def validate!
       REQUIRED_FIELDS.each do |field|
-        unless token_attrs.key?(field)
-          raise ValidationError, "Missing required field: #{field}"
-        end
+        raise ValidationError, "Missing required field: #{field}" unless token_attrs.key?(field)
       end
 
       protocol_version = token_attrs[:protocolVersion]
       unless SUPPORTED_PROTOCOLS.include?(protocol_version)
-        raise UnsupportedProtocolError, 
+        raise UnsupportedProtocolError,
               "Unsupported protocol version: #{protocol_version}. " \
               "Supported versions: #{SUPPORTED_PROTOCOLS.join(', ')}"
       end
@@ -79,9 +77,9 @@ module GooglePayDecryption
         raise ConfigurationError, 'recipient_id is required for Google Pay tokens'
       end
 
-      if verification_keys.nil? || verification_keys.empty?
-        raise ConfigurationError, 'verification_keys are required for Google Pay tokens'
-      end
+      return unless verification_keys.nil? || verification_keys.empty?
+
+      raise ConfigurationError, 'verification_keys are required for Google Pay tokens'
     end
 
     private
@@ -106,7 +104,7 @@ module GooglePayDecryption
 
       # Verify signature using ECDSA
       public_key = load_verification_key(verification_key)
-      digest = OpenSSL::Digest::SHA256.new
+      digest = OpenSSL::Digest.new('SHA256')
 
       unless public_key.verify(digest, signature_bytes, signed_data)
         raise SignatureError, 'Signature verification failed'
@@ -120,7 +118,7 @@ module GooglePayDecryption
     def find_verification_key(protocol_version)
       keys = verification_keys.is_a?(Hash) ? verification_keys['keys'] || verification_keys[:keys] : verification_keys
       keys = [keys] unless keys.is_a?(Array)
-      
+
       keys.find do |key|
         key_protocol = key['protocolVersion'] || key[:protocolVersion]
         key_protocol == protocol_version
@@ -158,7 +156,7 @@ module GooglePayDecryption
     def load_ephemeral_key(ephemeral_public_key_bytes)
       group = OpenSSL::PKey::EC::Group.new('prime256v1')
       key = OpenSSL::PKey::EC.new(group)
-      
+
       point = OpenSSL::PKey::EC::Point.new(group, OpenSSL::BN.new(ephemeral_public_key_bytes, 2))
       key.public_key = point
       key
@@ -169,7 +167,7 @@ module GooglePayDecryption
     def derive_keys(shared_secret, ephemeral_public_key_bytes)
       # Use HKDF to derive encryption and MAC keys
       info = [ephemeral_public_key_bytes].pack('m0')
-      
+
       # Derive 64 bytes: 32 for encryption, 32 for MAC
       derived = Security.hkdf_derive(shared_secret, info, 64)
 
@@ -179,19 +177,18 @@ module GooglePayDecryption
       }
     end
 
-    def decrypt_message(encrypted_data, encryption_key, tag)
+    def decrypt_message(encrypted_data, encryption_key, _tag)
       cipher = OpenSSL::Cipher.new('aes-256-ctr')
       cipher.decrypt
       cipher.key = encryption_key
       cipher.iv = "\x00" * 16 # 128-bit zero IV for CTR mode
 
-      plaintext = cipher.update(encrypted_data) + cipher.final
-      plaintext
+      cipher.update(encrypted_data) + cipher.final
     rescue StandardError => e
       raise DecryptionError, "Message decryption failed: #{e.message}"
     end
 
-    def verify_mac!(decrypted_data, mac_key)
+    def verify_mac!(_decrypted_data, _mac_key)
       # For now, we'll skip MAC verification as it's already verified through signature
       # In a production implementation, you might want to add additional MAC verification
       true

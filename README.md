@@ -325,16 +325,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 Everyone interacting in the GooglePayDecryption project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/codewithdzung/google_pay_decryption/blob/main/CODE_OF_CONDUCT.md).
 
-## Credits
-
-Inspired by [r2d2](https://github.com/begateway/r2d2) but with:
-- Better error handling with specific error types
-- Improved documentation and examples
-- More comprehensive test suite
-- Support for both ECv1 and ECv2 protocols
-- Better structured code with clear separation of concerns
-- Modern Ruby practices and coding standards
-
 ## Resources
 
 - [Google Pay Web Integration Guide](https://developers.google.com/pay/api/web/guides/tutorial)
