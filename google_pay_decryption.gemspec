@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = 'A secure, easy-to-use Ruby library for decrypting Google Pay (ECv1/ECv2) and Android Pay payment tokens with built-in signature verification and constant-time comparison'
   spec.homepage = 'https://github.com/codewithdzung/google_pay_decryption'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 2.7.0'
+  spec.required_ruby_version = '>= 3.2.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/codewithdzung/google_pay_decryption'
